@@ -1,0 +1,57 @@
+# ==========================================
+# SISTEMA RPG ANTES DA REFATORAÇÃO
+# ==========================================
+
+class Personagem:
+
+    def __init__(self, tipo):
+
+        self.tipo = tipo
+
+        if tipo == "Rajang":
+            self.forca = 30
+            self.inteligencia = 5
+
+        elif tipo == "Harmonico":
+            self.forca = 10
+            self.inteligencia = 30
+
+        # Buffs
+        self.buff_forca = False
+        self.berserk = False
+
+    def calcular_ataque(self, tipo_ataque):
+
+        # STRATEGY NÃO EXISTIA
+        if tipo_ataque == "fisico":
+            dano = self.forca * 2
+
+        elif tipo_ataque == "magico":
+            dano = self.inteligencia * 3
+
+        else:
+            dano = 0
+
+        # DECORATOR NÃO EXISTIA
+        if self.buff_forca:
+            dano += 10
+
+        if self.berserk:
+            dano += 30
+
+        return dano
+
+
+# ==========================================
+# MAIN
+# ==========================================
+
+# FACTORY METHOD NÃO EXISTIA
+personagem = Personagem("Rajang")
+
+personagem.buff_forca = True
+personagem.berserk = True
+
+dano = personagem.calcular_ataque("fisico")
+
+print("Dano final:", dano)

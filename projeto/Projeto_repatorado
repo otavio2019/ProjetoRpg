@@ -1,0 +1,148 @@
+# ==========================================
+# SISTEMA RPG DEPOIS DA REFATORAÇÃO
+# ==========================================
+
+
+# ==========================================
+# STRATEGY
+# ==========================================
+
+class EstrategiaAtaque:
+
+    def calcular(self, personagem):
+        pass
+
+
+class AtaqueFisico(EstrategiaAtaque):
+
+    def calcular(self, personagem):
+        return personagem.forca * 2
+
+
+class AtaqueMagico(EstrategiaAtaque):
+
+    def calcular(self, personagem):
+        return personagem.inteligencia * 3
+
+
+# ==========================================
+# CLASSE BASE
+# ==========================================
+
+class Personagem:
+
+    def __init__(self):
+        self.forca = 0
+        self.inteligencia = 0
+        self.estrategia = None
+
+    def set_estrategia(self, estrategia):
+        self.estrategia = estrategia
+
+    def atacar(self):
+        return self.estrategia.calcular(self)
+
+    def get_dano(self):
+        return 0
+
+
+# ==========================================
+# PERSONAGENS
+# ==========================================
+
+class Rajang(Personagem):
+
+    def __init__(self):
+        super().__init__()
+
+        self.forca = 30
+        self.inteligencia = 5
+
+    def get_dano(self):
+        return 50
+
+
+class Harmonico(Personagem):
+
+    def __init__(self):
+        super().__init__()
+
+        self.forca = 10
+        self.inteligencia = 30
+
+    def get_dano(self):
+        return 40
+
+
+# ==========================================
+# FACTORY METHOD
+# ==========================================
+
+class PersonagemFactory:
+
+    @staticmethod
+    def criar_personagem(tipo):
+
+        if tipo == "Rajang":
+            return Rajang()
+
+        elif tipo == "Harmonico":
+            return Harmonico()
+
+        else:
+            return None
+
+
+# ==========================================
+# DECORATOR
+# ==========================================
+
+class BuffDecorator:
+
+    def __init__(self, combatente):
+        self.combatente = combatente
+
+    def get_dano(self):
+        return self.combatente.get_dano()
+
+
+class BuffForca(BuffDecorator):
+
+    def get_dano(self):
+        return self.combatente.get_dano() + 10
+
+
+class Berserk(BuffDecorator):
+
+    def get_dano(self):
+        return self.combatente.get_dano() + 30
+
+
+# ==========================================
+# MAIN
+# ==========================================
+
+# FACTORY METHOD
+personagem = PersonagemFactory.criar_personagem("Rajang")
+
+print("Personagem criado:",
+      personagem.__class__.__name__)
+
+
+# STRATEGY
+personagem.set_estrategia(AtaqueFisico())
+
+dano_ataque = personagem.atacar()
+
+print("Dano do ataque:",
+      dano_ataque)
+
+
+# DECORATOR
+jogador = personagem
+
+jogador = BuffForca(jogador)
+jogador = Berserk(jogador)
+
+print("Dano final com buffs:",
+      jogador.get_dano())
